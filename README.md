@@ -3,9 +3,34 @@
 
 A modern, full-stack web application for parsing SQLite database files and exporting data to CSV format. Built with Node.js, Express, and a sleek glassmorphism UI with animated particle backgrounds.
 
-![License](https://img.shields.io/badge/license-License%201.0-blue)
-![Node.js](https://img.shields.io/badge/node.js-18%2B-green)
-![Express](https://img.shields.io/badge/express-5.1.0-lightgrey)
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Quick Start](#quick-start)
+    - [Prerequisites](#prerequisites)
+    - [Local Installation](#local-installation)
+- [Deployment](#deployment)
+    - [Vercel (Recommended)](#vercel-recommended)
+    - [Manual Deployment](#manual-deployment)
+- [Usage](#usage)
+    - [Web Interface](#web-interface)
+    - [API Endpoints](#api-endpoints)
+        - [POST /api/tables](#post-apitables)
+        - [POST /api/export](#post-apiexport)
+- [Tech Stack](#tech-stack)
+    - [Backend](#backend)
+    - [Frontend](#frontend)
+    - [Deployment](#deployment-1)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+    - [Code Style](#code-style)
+- [Troubleshooting](#troubleshooting)
+    - [Common Issues](#common-issues)
+- [License](#license)
+- [Author](#author)
+- [Acknowledgments](#acknowledgments)
 
 ---
 
