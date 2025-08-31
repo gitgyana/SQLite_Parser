@@ -177,7 +177,8 @@ SQLite_Parser/
 ├── public/                # Static frontend files
 │   ├── index.html         # Main HTML file
 │   ├── style.css          # Styling and CSS variables
-│   └── script.js          # Frontend JavaScript
+│   ├── animation.js       # Backdrop Animation
+│   └── sql.js             # Frontend JavaScript
 ├── uploads/               # Temporary file storage (local)
 ├── output/                # Generated CSV files (local)
 ├── index.js               # Express server for local development
