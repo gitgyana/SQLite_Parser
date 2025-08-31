@@ -1,0 +1,219 @@
+const dbFileInput = document.getElementById('dbFile');
+const tableSelect = document.getElementById('tableSelect');
+const exportBtn = document.getElementById('exportBtn');
+const messageDiv = document.getElementById('message');
+
+dbFileInput.addEventListener('change', async () => {
+    const file = dbFileInput.files[0];
+    if (!file) return;
+
+    messageDiv.textContent = 'Reading tables...';
+    tableSelect.innerHTML = '<option value="ALL">All Tables</option>';
+    tableSelect.disabled = true;
+    exportBtn.disabled = true;
+
+    // Send file to backend to get list of tables
+    const formData = new FormData();
+    formData.append('dbFile', file);
+
+    try {
+        const res = await fetch('/tables', { // Your backend endpoint to get tables
+            method: 'POST',
+            body: formData
+        });
+        if (!res.ok) throw new Error(`Server error: ${res.statusText}`);
+
+        const data = await res.json();
+        if (data.tables && data.tables.length > 0) {
+            data.tables.forEach(table => {
+                const option = document.createElement('option');
+                option.value = table;
+                option.textContent = table;
+                tableSelect.appendChild(option);
+            });
+        }
+
+        tableSelect.disabled = false;
+        exportBtn.disabled = false;
+        messageDiv.textContent = 'Select a table and click Export.';
+    } catch (err) {
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = 'Failed to load tables: ' + err.message;
+    }
+});
+
+document.getElementById('exportForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!dbFileInput.files[0]) return;
+
+    messageDiv.style.color = 'black';
+    messageDiv.textContent = 'Exporting... Please wait.';
+
+    const formData = new FormData();
+    formData.append('dbFile', dbFileInput.files[0]);
+    formData.append('table', tableSelect.value);
+
+    try {
+        const res = await fetch('/export', { // Your backend export endpoint
+            method: 'POST',
+            body: formData
+        });
+
+        if (!res.ok) throw new Error(`Server error: ${res.statusText}`);
+
+        // The server should respond with a CSV file
+        const blob = await res.blob();
+        const filename = res.headers.get('Content-Disposition')?.split('filename=')[1] || 'export.csv';
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename.replace(/"/g, '');
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        messageDiv.style.color = 'green';
+        messageDiv.textContent = 'CSV downloaded successfully.';
+    } catch (err) {
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = 'Export failed: ' + err.message;
+    }
+});
+
+
+
+    // Performance Utility
+    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
+    // Particle System Definition
+    class ParticleSystem {
+    constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.particles = [];
+    this.particleCount = 50;
+    this.mouse = { x: window.innerWidth/2, y: window.innerHeight/2 }; // Gentle central focus
+    this.animationId = null;
+    this.init();
+    this.setupEventListeners();
+    this.animate();
+}
+    init() {
+    this.resize();
+    this.createParticles();
+}
+    resize() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+}
+    createParticles() {
+    this.particles = [];
+    for (let i = 0; i < this.particleCount; i++) {
+    this.particles.push({
+    x: Math.random() * this.canvas.width,
+    y: Math.random() * this.canvas.height,
+    size: Math.random() * 2 + 1,
+    speedX: (Math.random() - 0.5) * 0.5,
+    speedY: (Math.random() - 0.5) * 0.5,
+    opacity: Math.random() * 0.5 + 0.2,
+    color: this.getRandomColor()
+});
+}
+}
+    getRandomColor() {
+    const colors = [
+    'rgba(79, 140, 255, 0.4)',   // Primary blue
+    'rgba(112, 193, 179, 0.4)',  // Secondary mint
+    'rgba(255, 169, 135, 0.4)',  // Accent peach
+    'rgba(79, 140, 255, 0.2)',   // Light blue
+    'rgba(112, 193, 179, 0.2)'   // Light mint
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+    setupEventListeners() {
+    window.addEventListener('resize', () => {
+    this.resize();
+    this.createParticles();
+});
+    // Optional: gentle mouse attraction (can be omitted or customized)
+    window.addEventListener('mousemove', (e) => {
+    this.mouse.x = e.clientX;
+    this.mouse.y = e.clientY;
+});
+}
+    updateParticles() {
+    this.particles.forEach(particle => {
+    // Move
+    particle.x += particle.speedX;
+    particle.y += particle.speedY;
+    // Optional: Mouse gentle attraction
+    const dx = this.mouse.x - particle.x;
+    const dy = this.mouse.y - particle.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < 100) {
+    const force = (100 - distance) / 10000;
+    particle.x += dx * force;
+    particle.y += dy * force;
+}
+    // Edge wrap
+    if (particle.x < 0) particle.x = this.canvas.width;
+    if (particle.x > this.canvas.width) particle.x = 0;
+    if (particle.y < 0) particle.y = this.canvas.height;
+    if (particle.y > this.canvas.height) particle.y = 0;
+    // Soft opacity oscillation
+    particle.opacity += (Math.random() - 0.5) * 0.02;
+    particle.opacity = clamp(particle.opacity, 0.1, 0.6);
+});
+}
+    drawParticles() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.particles.forEach(particle => {
+    this.ctx.beginPath();
+    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+    this.ctx.fillStyle = particle.color.replace(/[\d\.]+\)$/g, `${particle.opacity})`);
+    this.ctx.shadowBlur = 20;
+    this.ctx.shadowColor = particle.color;
+    this.ctx.fill();
+    this.ctx.shadowBlur = 0;
+});
+    this.drawConnections();
+}
+    drawConnections() {
+    for (let i = 0; i < this.particles.length; i++) {
+    for (let j = i + 1; j < this.particles.length; j++) {
+    const dx = this.particles[i].x - this.particles[j].x;
+    const dy = this.particles[i].y - this.particles[j].y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < 120) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+    this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+    this.ctx.strokeStyle = `rgba(79, 140, 255, ${0.1 * (1 - distance / 120)})`;
+    this.ctx.lineWidth = 1;
+    this.ctx.stroke();
+}
+}
+}
+}
+    animate() {
+    this.updateParticles();
+    this.drawParticles();
+    this.animationId = requestAnimationFrame(() => this.animate());
+}
+    destroy() {
+    if (this.animationId) {
+    cancelAnimationFrame(this.animationId);
+}
+}
+}
+
+    // Launch animation on DOM loaded
+    document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('particles-canvas');
+    if (canvas) {
+    window.particleSystem = new ParticleSystem(canvas);
+}
+});

@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "csv-writer": "^1.6.0",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "sqlite3": "^5.1.7"
+  },
+  "name": "sqlite_parser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gitgyana/SQLite_Parser.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gitgyana/SQLite_Parser/issues"
+  },
+  "homepage": "https://github.com/gitgyana/SQLite_Parser#readme",
+  "description": ""
+}
