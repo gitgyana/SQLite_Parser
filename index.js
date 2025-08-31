@@ -1,37 +1,30 @@
 const express = require('express');
 const multer = require('multer');
 const sqlite3 = require('sqlite3').verbose();
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require('fs');
 const path = require('path');
-
+const cors = require('cors');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.static('public'));
 
+// Set up storage directories for local use
 const upload = multer({ dest: 'uploads/' });
 
-// POST /tables - receive DB file, return list of tables
-app.post('/tables', upload.single('dbFile'), (req, res) => {
+app.post('/api/tables', upload.single('dbFile'), (req, res) => {
     const dbPath = req.file.path;
-
-    const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, (err) => {
+    const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, err => {
         if (err) {
             cleanup();
             return res.status(500).json({ error: 'Failed to open DB' });
         }
-
         db.all("SELECT name FROM sqlite_master WHERE type='table'", [], (err, rows) => {
             cleanup();
-            if (err) {
-                return res.status(500).json({ error: 'Failed to read tables' });
-            }
-
-            const tables = rows.map(r => r.name);
-            res.json({ tables });
+            if (err) return res.status(500).json({ error: 'Failed to read tables' });
+            res.json({ tables: rows.map(r => r.name) });
         });
-
         function cleanup() {
             db.close();
             fs.unlink(dbPath, () => {});
@@ -39,23 +32,18 @@ app.post('/tables', upload.single('dbFile'), (req, res) => {
     });
 });
 
-// POST /export - receive DB file + table, return CSV
-app.post('/export', upload.single('dbFile'), (req, res) => {
+app.post('/api/export', upload.single('dbFile'), (req, res) => {
     const dbPath = req.file.path;
     const table = req.body.table;
-
-    const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, (err) => {
+    const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, err => {
         if (err) {
             cleanup();
             return res.status(500).send('Failed to open DB');
         }
-
-        const query = table === 'ALL' ?
-            "SELECT name FROM sqlite_master WHERE type='table'" :
-            null;
-
+        const query = table === 'ALL'
+            ? "SELECT name FROM sqlite_master WHERE type='table'"
+            : null;
         if (query) {
-            // Export all tables
             db.all(query, [], (err, tables) => {
                 if (err) {
                     cleanup();
@@ -66,9 +54,7 @@ app.post('/export', upload.single('dbFile'), (req, res) => {
         } else {
             exportTables([table]);
         }
-
         function exportTables(tables) {
-            // For simplicity, export only first table if multiple (you can extend)
             const exportTable = tables[0];
             db.all(`SELECT * FROM ${exportTable}`, [], async (err, rows) => {
                 if (err) {
@@ -79,27 +65,17 @@ app.post('/export', upload.single('dbFile'), (req, res) => {
                     cleanup();
                     return res.status(400).send('Table is empty');
                 }
-
-                const headers = Object.keys(rows[0]).map(name => ({id: name, title: name}));
-                const fileName = `${exportTable}.csv`;
-                const filePath = path.join('output', fileName);
-
-                const csvWriter = createCsvWriter({
-                    path: filePath,
-                    header: headers
-                });
-
-                await csvWriter.writeRecords(rows);
-
+                const fields = Object.keys(rows[0]);
+                const header = fields.join(',') + '\n';
+                const data = rows.map(row =>
+                    fields.map(k => (typeof row[k] === 'string' && row[k].includes(',') ? `"${row[k].replace(/"/g, '""')}"` : row[k])).join(',')
+                ).join('\n');
                 cleanup();
-
-                res.download(filePath, fileName, (err) => {
-                    if (err) console.error(err);
-                    fs.unlink(filePath, () => {});
-                });
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', `attachment; filename="${exportTable}.csv"`);
+                res.send(header + data);
             });
         }
-
         function cleanup() {
             db.close();
             fs.unlink(dbPath, () => {});
