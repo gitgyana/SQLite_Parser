@@ -3,3 +3,4 @@ node_modules
 output
 uploads
 "node_modules/" 
+".idea/" 
