@@ -17,7 +17,7 @@ dbFileInput.addEventListener('change', async () => {
     formData.append('dbFile', file);
 
     try {
-        const res = await fetch('/tables', { // Your backend endpoint to get tables
+        const res = await fetch('/api/tables', { // Your backend endpoint to get tables
             method: 'POST',
             body: formData
         });
@@ -55,7 +55,7 @@ document.getElementById('exportForm').addEventListener('submit', async (e) => {
     formData.append('table', tableSelect.value);
 
     try {
-        const res = await fetch('/export', { // Your backend export endpoint
+        const res = await fetch('/api/export', { // Your backend export endpoint
             method: 'POST',
             body: formData
         });
