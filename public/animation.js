@@ -1,3 +1,23 @@
+const welcomeMsg = document.getElementById('welcome-msg');
+const fullText = welcomeMsg.textContent;
+welcomeMsg.textContent = '';
+
+let index = 0;
+const typingSpeed = 30; // milliseconds per character
+
+function typeWriter() {
+    if (index < fullText.length) {
+        welcomeMsg.textContent += fullText.charAt(index);
+        index++;
+        setTimeout(typeWriter, typingSpeed);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    typeWriter();
+});
+
+
 // Performance Utility
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
