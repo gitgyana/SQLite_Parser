@@ -7,6 +7,11 @@ dbFileInput.addEventListener('change', async () => {
     const file = dbFileInput.files[0];
     if (!file) return;
 
+    if (file.size > 4 * 1024 * 1024) {
+        messageDiv.textContent = 'File too large. Please use a database under 4MB for online processing.';
+        return;
+    }
+
     messageDiv.textContent = 'Reading tables...';
     tableSelect.innerHTML = '<option value="ALL">All Tables</option>';
     tableSelect.disabled = true;
