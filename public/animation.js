@@ -10,7 +10,6 @@ class ParticleSystem {
         this.ctx = canvas.getContext('2d');
         this.particles = [];
         this.particleCount = 50;
-        this.mouse = { x: window.innerWidth/2, y: window.innerHeight/2 }; // Gentle central focus
         this.animationId = null;
         this.init();
         this.setupEventListeners();
@@ -59,15 +58,7 @@ class ParticleSystem {
             // Move
             particle.x += particle.speedX;
             particle.y += particle.speedY;
-            // Optional: Mouse gentle attraction
-            const dx = this.mouse.x - particle.x;
-            const dy = this.mouse.y - particle.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < 100) {
-                const force = (100 - distance) / 10000;
-                particle.x += dx * force;
-                particle.y += dy * force;
-            }
+
             // Edge wrap
             if (particle.x < 0) particle.x = this.canvas.width;
             if (particle.x > this.canvas.width) particle.x = 0;
