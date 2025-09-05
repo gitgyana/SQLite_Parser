@@ -70,7 +70,11 @@ npm install
 ```
 npm start
 ```
-
+if faced with errors, try 
+``` 
+npm install cors
+node index.js
+```
 4. **Open your browser**
 ```
 http://localhost:3000
@@ -101,7 +105,11 @@ For other platforms (Railway, Heroku, etc.):
 npm install
 npm start
 ```
-
+or
+``` 
+npm install cors
+node index.js
+```
 ---
 
 ## Usage
