@@ -44,16 +44,16 @@ dbFileInput.addEventListener('change', async () => {
     if (!isSQLite) {
         messageDiv.textContent = 'This file is not a valid SQLite database.';
 
-        const tableSelect = document.querySelector('label[for="tableSelect"]');
-        const selectElement = document.getElementById('tableSelect');
-        const option = selectElement.querySelector('option[value="ALL"]');
-        tableSelect.textContent = 'INVALID DATABASE';
+        const tableSelectLabel = document.querySelector('label[for="tableSelect"]');
+        const option = tableSelect.querySelector('option[value="ALL"]');
+
+        tableSelectLabel.textContent = 'INVALID DATABASE';
         option.textContent = 'NO TABLE FOUND';
         option.style.textAlign = 'center';
 
         return;
     }
-    
+
     document.querySelector('link[rel="stylesheet"]').href = 'style.css';
     messageDiv.textContent = 'Valid SQLite file detected. Reading tables...';
 
