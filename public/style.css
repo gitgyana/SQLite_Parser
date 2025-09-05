@@ -81,13 +81,6 @@ div {
     justify-content: center;
 }
 
-#welcome-msg {
-    margin-bottom: var(--space-6);
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
 form {
     background: var(--bg-glass);
     box-shadow: 0 6px 24px var(--shadow-light);
@@ -165,6 +158,18 @@ button[type="submit"]:disabled {
     color: var(--secondary);
 }
 
+#feature-msg {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    margin-bottom: var(--space-6);
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     body {
@@ -173,7 +178,7 @@ button[type="submit"]:disabled {
     form {
         padding: var(--space-4);
     }
-    #welcome-msg {
+    #feature-msg {
         font-size: var(--font-size-lg);
     }
 }
