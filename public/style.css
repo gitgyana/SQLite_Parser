@@ -125,6 +125,7 @@ select:focus {
 select option {
     background: #23272f;
     color: #fafbff;
+    text-align: center;
 }
 
 button[type="submit"] {
