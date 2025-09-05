@@ -131,9 +131,40 @@ document.getElementById('exportForm').addEventListener('submit', async (e) => {
         try {
             let csv = '';
             if (table === 'ALL') {
+                const tablesRes = dbInstance.exec("SELECT name FROM sqlite_master WHERE type='table'");
+                if (tablesRes.length === 0) throw new Error('No tables found in database.');
 
-                csv = 'Exporting all tables in browser is not implemented.';
-                throw new Error("Exporting all tables from large DB is not supported yet.");
+                const tables = tablesRes[0].values.flat();
+
+                tables.forEach(tableName => {
+                    const res = dbInstance.exec(`SELECT * FROM "${tableName}"`);
+                    if (res.length === 0) {
+                        console.warn(`Table ${tableName} is empty, skipping export.`);
+                        return;
+                    }
+                    const { columns, values } = res[0];
+                    let csv = columns.join(',') + '\n';
+                    values.forEach(row => {
+                        csv += row.map(val =>
+                            typeof val === 'string' && val.includes(',') ? `"${val.replace(/"/g, '""')}"` : val
+                        ).join(',') + '\n';
+                    });
+
+                    // Trigger a download for each table CSV
+                    const blob = new Blob([csv], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${tableName}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                });
+
+                messageDiv.style.color = 'green';
+                messageDiv.textContent = `CSV files for all ${tables.length} tables downloaded (browser side).`;
+
             } else {
 
                 const res = dbInstance.exec(`SELECT * FROM "${table}"`);
