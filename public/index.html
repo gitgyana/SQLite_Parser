@@ -20,7 +20,8 @@
         <div>
             <form id="exportForm">
                 <label for="dbFile">Select SQLite DB file:</label>
-                <input type="file" id="dbFile" name="dbFile" accept=".db,.sqlite3" required />
+                <label for="dbFile" class="file-label">Choose SQLite file</label>
+                <input type="file" id="dbFile" name="dbFile" accept=".db,.sqlite3" required style="display:none;" />
 
                 <label for="tableSelect">Select Table:</label>
                 <select id="tableSelect" name="tableSelect" disabled>
