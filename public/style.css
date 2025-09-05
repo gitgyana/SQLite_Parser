@@ -107,7 +107,7 @@ label {
     color: var(--text-secondary);
 }
 
-.file-label,
+#file-label,
 select {
     padding: var(--space-10) var(--space-3);
     font-size: var(--font-size-base);
@@ -121,7 +121,7 @@ select {
     margin-bottom: var(--space-2);
 }
 
-.file-label:focus,
+#file-label:focus,
 select:focus {
     outline: none;
     border-color: var(--primary);
