@@ -128,6 +128,12 @@ select:focus {
     box-shadow: 0 0 0 2px var(--primary)30;
 }
 
+/* Dropdown option styling (works in most browsers except Safari/Firefox) */
+select option {
+    background: #23272f;
+    color: #fafbff;
+}
+
 button[type="submit"] {
     background: var(--primary);
     color: #fff;
