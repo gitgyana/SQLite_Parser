@@ -28,6 +28,8 @@
     --space-4: 1rem;
     --space-6: 1.5rem;
     --space-8: 2rem;
+    --space-10: 3rem;
+    --space-15: 5rem;
 
     /* Border radius */
     --radius-base: 0.5rem;
@@ -105,9 +107,9 @@ label {
     color: var(--text-secondary);
 }
 
-input[type="file"],
+.file-label,
 select {
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-10) var(--space-3);
     font-size: var(--font-size-base);
     border: 1px solid var(--border);
     border-radius: var(--radius-base);
@@ -119,7 +121,7 @@ select {
     margin-bottom: var(--space-2);
 }
 
-input[type="file"]:focus,
+.file-label:focus,
 select:focus {
     outline: none;
     border-color: var(--primary);
