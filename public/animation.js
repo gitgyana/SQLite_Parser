@@ -53,11 +53,6 @@ class ParticleSystem {
             this.resize();
             this.createParticles();
         });
-        // Optional: gentle mouse attraction (can be omitted or customized)
-        window.addEventListener('mousemove', (e) => {
-            this.mouse.x = e.clientX;
-            this.mouse.y = e.clientY;
-        });
     }
     updateParticles() {
         this.particles.forEach(particle => {
